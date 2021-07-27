@@ -1,16 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreatePlayerDTO } from './dtos/createPlayer.dto';
+import { PlayersService } from './players.service';
 
 @Controller('api/v1/players')
 export class PlayersController {
-  @Post()
-  async createAndUpdatePlayer(@Body() createPlayerDTO: CreatePlayerDTO) {
-    const { name, email, phone } = createPlayerDTO;
+  constructor(private readonly playersService: PlayersService) {}
 
-    return {
-      name,
-      email,
-      phone,
-    };
+  @Post()
+  async create(@Body() { name, email, phone }: CreatePlayerDTO) {
+    await this.playersService.createAndUpdatePlayer({ name, email, phone });
   }
 }
