@@ -46,5 +46,18 @@ export class PlayersService {
     };
 
     this.players.push(player);
+
+    return player;
+  }
+
+  private async update({
+    player,
+    name,
+    phone,
+  }: IRequestUpdatePlayer): Promise<Player> {
+    player.name = name;
+    player.phone = phone;
+
+    return player;
   }
 }
