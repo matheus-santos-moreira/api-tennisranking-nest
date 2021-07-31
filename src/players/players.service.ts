@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
 import { CreatePlayerDTO } from './dtos/createPlayer.dto';
 import { Player } from './interfaces/player.interface';
+
+interface IRequestUpdatePlayer {
+  player: Player;
+  name: string;
+  phone: string;
+}
 
 @Injectable()
 export class PlayersService {
