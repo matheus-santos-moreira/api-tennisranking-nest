@@ -15,6 +15,17 @@ export class PlayersService {
     email,
     phone,
   }: CreatePlayerDTO): Promise<void> {
+    const playerAlreadyExits = this.players.find(
+      (player) => player.email === email,
+    );
+
+    if (!playerAlreadyExits) {
+      this.create({ name, email, phone });
+      return;
+    }
+
+    this.update({ email, name, phone });
+
     this.logger.log('AQUI', { name, email, phone });
     this.create({ name, email, phone });
   }
