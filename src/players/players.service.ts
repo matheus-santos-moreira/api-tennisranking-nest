@@ -41,6 +41,12 @@ export class PlayersService {
     return this.players;
   }
 
+  async findByEmail(email: string): Promise<Player> {
+    const player = this.players.find((player) => player.email === email);
+
+    return player;
+  }
+
   private async create({
     name,
     email,
