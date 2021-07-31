@@ -1,20 +1,24 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
 import { CreatePlayerDTO } from './dtos/createPlayer.dto';
 import { Player } from './interfaces/player.interface';
 
+interface IRequestUpdatePlayer {
+  player: Player;
+  name: string;
+  phone: string;
+}
+
 @Injectable()
 export class PlayersService {
   private players: Player[] = [];
-
-  private readonly logger = new Logger(PlayersService.name);
 
   async createAndUpdatePlayer({
     name,
     email,
     phone,
-  }: CreatePlayerDTO): Promise<void> {
+  }: CreatePlayerDTO): Promise<Player> {
     const playerAlreadyExits = this.players.find(
       (player) => player.email === email,
     );
@@ -24,17 +28,24 @@ export class PlayersService {
       return player;
     }
 
-    this.update({ email, name, phone });
+    const player = await this.update({
+      player: playerAlreadyExits,
+      name,
+      phone,
+    });
 
-    this.logger.log('AQUI', { name, email, phone });
-    this.create({ name, email, phone });
+    return player;
   }
 
   async get(): Promise<Player[]> {
     return this.players;
   }
 
-  private create({ name, email, phone }: CreatePlayerDTO): void {
+  private async create({
+    name,
+    email,
+    phone,
+  }: CreatePlayerDTO): Promise<Player> {
     const player: Player = {
       _id: uuid(),
       name,
