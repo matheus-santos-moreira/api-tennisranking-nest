@@ -8,7 +8,13 @@ export class PlayersController {
 
   @Post()
   async create(@Body() { name, email, phone }: CreatePlayerDTO) {
-    await this.playersService.createAndUpdatePlayer({ name, email, phone });
+    const player = await this.playersService.createAndUpdatePlayer({
+      name,
+      email,
+      phone,
+    });
+
+    return player;
   }
 
   @Get()
