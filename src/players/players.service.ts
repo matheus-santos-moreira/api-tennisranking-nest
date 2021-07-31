@@ -14,14 +14,14 @@ export class PlayersService {
     name,
     email,
     phone,
-  }: CreatePlayerDTO): Promise<Player> {
+  }: CreatePlayerDTO): Promise<void> {
     const playerAlreadyExits = this.players.find(
       (player) => player.email === email,
     );
 
     if (!playerAlreadyExits) {
-      this.create({ name, email, phone });
-      return;
+      const player = await this.create({ name, email, phone });
+      return player;
     }
 
     this.update({ email, name, phone });
