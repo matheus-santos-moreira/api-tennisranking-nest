@@ -4,12 +4,6 @@ import { v4 as uuid } from 'uuid';
 import { CreatePlayerDTO } from './dtos/createPlayer.dto';
 import { Player } from './interfaces/player.interface';
 
-interface IRequestUpdatePlayer {
-  player: Player;
-  name: string;
-  phone: string;
-}
-
 @Injectable()
 export class PlayersService {
   private players: Player[] = [];
@@ -26,8 +20,8 @@ export class PlayersService {
     );
 
     if (!playerAlreadyExits) {
-      this.create({ name, email, phone });
-      return;
+      const player = await this.create({ name, email, phone });
+      return player;
     }
 
     this.update({ email, name, phone });
