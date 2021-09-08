@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
 import { CreatePlayerDTO } from './dtos/createPlayer.dto';
@@ -14,14 +16,15 @@ interface IRequestUpdatePlayer {
 export class PlayersService {
   private players: Player[] = [];
 
+  constructor(
+    @InjectModel('player') private readonly playerModel: Model<Player>,
+  ) {}
   async createAndUpdatePlayer({
     name,
     email,
     phone,
   }: CreatePlayerDTO): Promise<Player> {
-    const playerAlreadyExits = this.players.find(
-      (player) => player.email === email,
-    );
+    const playerAlreadyExits = await this.playerModel.findOne({ email }).exec();
 
     if (!playerAlreadyExits) {
       const player = await this.create({ name, email, phone });
@@ -44,25 +47,21 @@ export class PlayersService {
   async findByEmail(email: string): Promise<Player> {
     const player = this.players.find((player) => player.email === email);
 
+    if (!player) {
+      throw new NotFoundException(`Player not found`);
+    }
+
     return player;
   }
 
-  private async create({
-    name,
-    email,
-    phone,
-  }: CreatePlayerDTO): Promise<Player> {
-    const player: Player = {
-      _id: uuid(),
-      name,
-      email,
-      phone,
-      avatarUrl: 'https://avatars.githubusercontent.com/u/52337444?v=4',
-      ranking: 'A',
-      rankingPosition: 0,
-    };
+  async deletePlayer(email: string): Promise<void> {
+    const playerExists = await this.findByEmail(email);
 
-    this.players.push(player);
+    this.players = this.players.filter((player) => player !== playerExists);
+  }
+
+  private async create(data: CreatePlayerDTO): Promise<Player> {
+    const player = await this.playerModel.create(data);
 
     return player;
   }
