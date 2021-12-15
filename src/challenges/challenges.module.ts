@@ -5,6 +5,7 @@ import { ChallengesController } from './challenges.controller';
 import { ChallengesService } from './challenges.service';
 import { PlayersModule } from 'src/players/players.module';
 import { CategoriesModule } from 'src/categories/categories.module';
+import { GameSchema } from './models/game.model';
 
 @Module({
   imports: [
@@ -12,6 +13,10 @@ import { CategoriesModule } from 'src/categories/categories.module';
       {
         name: 'challenges',
         schema: ChallengesModel,
+      },
+      {
+        name: 'games',
+        schema: GameSchema,
       },
     ]),
     PlayersModule,
