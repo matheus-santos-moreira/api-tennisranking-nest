@@ -110,4 +110,16 @@ export class CategoriesService {
       categoryExist,
     );
   }
+
+  // should be consult category by player id
+  async getCategoryByPlayerId(playerId: string): Promise<Category> {
+    const player = await this.playersService.findById(playerId);
+
+    const category = await this.categoryModel
+      .findOne()
+      .where('players')
+      .in(player._id);
+
+    return category;
+  }
 }

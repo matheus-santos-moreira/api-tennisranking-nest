@@ -72,4 +72,16 @@ export class PlayersService {
 
     await this.playerModel.findByIdAndDelete(player._id);
   }
+
+  async findPlayers(ids: string[]): Promise<Player[]> {
+    const players = await this.playerModel.find({
+      _id: { $in: ids },
+    });
+
+    if (players.length !== ids.length) {
+      throw new BadRequestException('Players not found');
+    }
+
+    return players;
+  }
 }
